@@ -1,0 +1,492 @@
+Este capítulo presenta los resultados obtenidos en el desarrollo del kit educativo de clasificación de objetos con visión por computador para el robot PhantomX Pincher. Los resultados se organizan siguiendo la estructura de objetivos específicos planteados, abordando aspectos de hardware, software, diseño mecánico, simulación, implementación educativa y construcción de prototipos físicos.
+
+%==============================================================================
+\section{Selección de Hardware y Software}
+%==============================================================================
+
+En respuesta al objetivo específico de identificar los requerimientos de hardware y software necesarios para el sistema de clasificación, se realizó un proceso de evaluación comparativa que culminó en la selección de componentes óptimos para la plataforma educativa.
+
+\subsection{Plataforma de Procesamiento}
+
+Se identificó la \textbf{Raspberry Pi 5 con 16 GB de RAM} como la plataforma de procesamiento óptima para los kits educativos. Esta selección se fundamentó en los siguientes criterios técnicos:
+
+\begin{itemize}
+    \item \textbf{Rendimiento computacional}: El procesador Broadcom BCM2712 de cuatro núcleos Cortex-A76 a 2.4 GHz proporciona capacidad suficiente para ejecutar simultáneamente ROS2 Jazzy, MoveIt2, procesamiento de imágenes con OpenCV y controladores de hardware en tiempo real.
+    
+    \item \textbf{Memoria RAM}: Los 16 GB de RAM permiten operación fluida del sistema sin degradación de rendimiento durante tareas de planificación de trayectorias complejas y procesamiento de imágenes en resolución 1280×720 píxeles a 30 fps.
+    
+    \item \textbf{Compatibilidad con ROS2}: Soporte nativo para Ubuntu 24.04 LTS (arquitectura ARM64), sistema operativo base para ROS2 Jazzy utilizado en el desarrollo del workspace.
+    
+    \item \textbf{Conectividad}: Interfaz GPIO de 40 pines para control de actuadores, 2 puertos USB 3.0 para cámara y periféricos, puerto Ethernet Gigabit para transferencia de datos y depuración remota.
+    
+    \item \textbf{Relación costo-beneficio}: Precio competitivo en comparación con computadores de placa única de prestaciones equivalentes, alineado con restricciones presupuestarias para producción de múltiples unidades.
+\end{itemize}
+
+\subsection{Stack de Software}
+
+El stack de software seleccionado integra las siguientes tecnologías:
+
+\begin{itemize}
+    \item \textbf{Sistema operativo}: Ubuntu 24.04 LTS Server (64-bit) optimizado para operación en Raspberry Pi 5
+    \item \textbf{Framework robótico}: ROS2 Jazzy Jalisco (distribución LTS con soporte hasta 2029)
+    \item \textbf{Planificación de movimiento}: MoveIt2 con planificadores OMPL (RRTConnect, RRTstar, PRM)
+    \item \textbf{Visión por computador}: OpenCV 4.8 con bindings Python para procesamiento de imágenes
+    \item \textbf{Control de hardware}: Dynamixel SDK para comunicación con servomotores AX-12A mediante protocolo serie
+    \item \textbf{Simulación física}: Gazebo Harmonic integrado con ROS2 para validación previa a despliegue en hardware real
+\end{itemize}
+
+Esta configuración de software proporciona un entorno completo para desarrollo, simulación y operación del sistema de clasificación, cumpliendo con estándares industriales y académicos actuales en robótica de servicio.
+
+%==============================================================================
+\section{Diseño Mecánico y Modelado 3D}
+%==============================================================================
+
+En concordancia con el objetivo de diseñar conceptualmente la estructura física del kit, se desarrolló un sistema mecánico completo que integra todos los componentes operativos y de almacenamiento. El diseño se materializó mediante modelado tridimensional en SolidWorks 2023, generando geometrías optimizadas para fabricación mediante manufactura aditiva (FDM) y mecanizado de tableros MDF.
+
+\subsection{Componentes Desarrollados}
+
+El proceso de diseño resultó en la generación de modelos 3D para los siguientes componentes:
+
+\subsubsection{Plataforma Base}
+
+Estructura principal fabricada en tablero MDF de 9 mm de espesor con dimensiones finales de 554 mm × 360 mm × 706 mm (incluyendo mástil de cámara). La plataforma integra:
+
+\begin{itemize}
+    \item Sistema de retícula de montaje con insertos roscados M4 para fijación de componentes
+    \item Cuatro patas niveladoras ajustables mediante tornillos M10 en las esquinas
+    \item Patas de soporte centrales para rigidez estructural adicional
+    \item Dos manijas de transporte laterales con tornillería M6
+    \item Canaletas de gestión de cableado con tapas transparentes en PETG
+\end{itemize}
+
+\subsubsection{Zonas de Trabajo}
+
+\begin{itemize}
+    \item \textbf{Zona de recolección}: Disco circular de Ø146 mm fabricado en PLA blanco, fijado mediante cuatro tornillos M3 a insertos roscados de la plataforma. Posicionado en el centro del área de alcance efectivo del manipulador.
+    
+    \item \textbf{Zonas de depósito}: Cuatro canecas con dimensiones externas de 100 mm × 94 mm y profundidad útil de 142 mm. Cada caneca incorpora tapa deslizante accionada manualmente, insertos roscados M3 de latón instalados térmicamente, y sistema de separadores de altura para montaje elevado.
+\end{itemize}
+
+\subsubsection{Base del Manipulador}
+
+Soporte estructural para el robot PhantomX Pincher que reemplaza la base original de acrílico. El diseño incorpora identificación numérica grabada para gestión de inventario en entornos de laboratorio con múltiples unidades.
+
+\subsubsection{Soporte de Cámara}
+
+Estructura modular compuesta por:
+\begin{itemize}
+    \item Mástil vertical de 280 mm de altura fabricado mediante FDM
+    \item Brazo voladizo de 200 mm con inclinación de 15° para orientación óptima de la cámara
+    \item Soporte de montaje para cámara Logitech C270 con ajuste de inclinación
+    \item Sistema de fijación mediante tornillos M4 a insertos roscados de la plataforma
+\end{itemize}
+
+\subsubsection{Sistema de Alimentación Eléctrica}
+
+Regleta de distribución personalizada que integra:
+\begin{itemize}
+    \item Cuatro salidas AC 110V con fusible de protección de 15A
+    \item Tres interruptores individuales para control independiente de subsistemas (manipulador, controlador, bomba de vacío)
+    \item Carcasa impresa en 3D con cavidades para alojamiento de componentes eléctricos
+    \item Cable de alimentación principal con conector tipo NEMA 5-15P
+\end{itemize}
+
+\subsection{Documentación de Diseño}
+
+Como resultado del proceso de modelado, se generó documentación técnica completa que incluye:
+
+\begin{itemize}
+    \item \textbf{Modelos CAD nativos}: Archivos fuente en formato SolidWorks (.SLDPRT, .SLDASM) con árbol de características editables
+    \item \textbf{Geometrías de manufactura}: Exportación de 127 archivos STL optimizados para impresión 3D con orientación de capa óptima
+    \item \textbf{Planos técnicos}: Documentación de 15 componentes críticos con acotación completa, tolerancias dimensionales y especificaciones de material
+    \item \textbf{Ensambles}: 8 subensambles documentados con explosionados, listas de materiales (BOM) y secuencias de montaje
+    \item \textbf{Esquemas eléctricos}: Diagramas de conexión para sistema de distribución eléctrica, interfaz de control y cableado de señal
+\end{itemize}
+
+Esta documentación se organizó en repositorio Git estructurado con las siguientes carpetas:
+
+\begin{itemize}
+    \item \texttt{CAD/}: Modelos nativos SolidWorks organizados por subsistema
+    \item \texttt{STL/}: Archivos de manufactura listos para impresión 3D
+    \item \texttt{Planos/}: Documentación técnica en formato PDF
+    \item \texttt{Electronica/}: Esquemas de circuitos y listas de componentes
+    \item \texttt{Ensambles/}: Instrucciones de montaje ilustradas
+\end{itemize}
+
+El repositorio completo se entregó como parte de los entregables del proyecto, permitiendo reproducción, modificación y extensión del diseño por parte de instituciones educativas que adopten el kit.
+
+%==============================================================================
+\section{Arquitectura de Software y Simulación}
+%==============================================================================
+
+Dando respuesta a los objetivos de proponer una arquitectura de software basada en ROS2 y desarrollar simulaciones compatibles, se implementó un workspace completo que integra descripción del robot, planificación de movimiento, control de hardware y capacidades de visión artificial.
+
+\subsection{Estructura del Workspace ROS2}
+
+El workspace \texttt{phantom\_ws} se estructuró siguiendo convenciones estándar de ROS2, resultando en 9 paquetes especializados:
+
+\begin{itemize}
+    \item \textbf{phantomx\_pincher\_description}: Modelos URDF/SDF del robot con parámetros configurables mediante Xacro, mallas visuales y de colisión, definición de marcos de referencia (TF tree)
+    
+    \item \textbf{phantomx\_pincher\_moveit\_config}: Configuración completa de MoveIt2 incluyendo SRDF (definición de grupos de planificación, estados nombrados), parámetros de cinemática, configuración de planificadores OMPL, límites de articulaciones
+    
+    \item \textbf{phantomx\_pincher\_bringup}: Archivos launch jerárquicos para arranque del sistema en diferentes modos (simulación fake, Gazebo, hardware real), configuración condicional de nodos
+    
+    \item \textbf{phantomx\_pincher\_commander\_cpp}: Interfaz de alto nivel en C++ para envío de comandos de movimiento, wrapper de MoveGroupInterface de MoveIt2
+    
+    \item \textbf{phantomx\_pincher\_demos}: Scripts de demostración en Python para operaciones básicas (objetivos de articulación, objetivos de pose cartesiana, rutinas pick-and-place)
+    
+    \item \textbf{phantomx\_pincher\_opencv}: Nodos de visión por computador para captura de cámara, procesamiento de imágenes, detección de figuras geométricas
+    
+    \item \textbf{phantomx\_pincher\_interfaces}: Definición de mensajes personalizados (PoseCommand, VisionResult) y servicios para comunicación entre nodos
+    
+    \item \textbf{pincher\_control}: Controladores de hardware para comunicación con servomotores Dynamixel mediante protocolo serie, implementación de interfaces ros2\_control
+    
+    \item \textbf{phantomx\_pincher} (metapaquete): Dependencias y configuración global del workspace
+\end{itemize}
+
+\subsection{Capacidades de Simulación}
+
+El workspace implementa tres modos de operación con simulación progresiva:
+
+\begin{enumerate}
+    \item \textbf{Modo fake (controladores simulados)}: Ejecución de planificación y visualización sin física simulada, útil para validación rápida de cinemática y algoritmos de planificación
+    
+    \item \textbf{Modo Gazebo}: Simulación física completa con modelo dinámico del manipulador, detección de colisiones, visualización realista en entorno 3D
+    
+    \item \textbf{Modo hardware real}: Operación con robot físico, transición directa desde simulación sin modificación de código de alto nivel
+\end{enumerate}
+
+La arquitectura permite conmutar entre modos mediante argumentos de launch, facilitando flujo de desarrollo: validación en fake → pruebas en Gazebo → despliegue en hardware.
+
+\subsection{Flujo de Datos del Sistema}
+
+Se implementó pipeline de procesamiento con la siguiente arquitectura de nodos:
+
+\begin{itemize}
+    \item \textbf{Nodo de visión}: Captura frames de cámara (1280×720 @ 30 fps), conversión RGB→HSV, segmentación por color, detección de contornos, clasificación de figuras, publicación en tópico \texttt{/tipo\_figura}
+    
+    \item \textbf{Nodo clasificador}: Suscripción a \texttt{/tipo\_figura}, mapeo de figura a coordenadas de caneca, generación de secuencia de movimientos (8 pasos), publicación de comandos a MoveIt2
+    
+    \item \textbf{Nodo de planificación (MoveIt2)}: Recepción de objetivos de pose, planificación de trayectorias libres de colisión con OMPL, ejecución mediante controladores
+    
+    \item \textbf{Nodo de control}: Interfaz con hardware (fake/Gazebo/real), actualización de estados de articulaciones a 250 Hz, publicación en \texttt{/joint\_states}
+    
+    \item \textbf{Robot State Publisher}: Cálculo de transformadas geométricas (árbol TF), publicación para visualización en RViz
+\end{itemize}
+
+Esta arquitectura modular permite desarrollo independiente de componentes, facilitando extensión y mantenimiento del sistema.
+
+\subsection{Material de Apoyo Educativo}
+
+Como parte del entregable de software, se desarrollaron guías técnicas documentadas en formato Markdown:
+
+\begin{itemize}
+    \item \textbf{Setup}: Instrucciones completas de instalación de ROS2 Jazzy, dependencias del sistema, configuración de workspace, compilación de paquetes
+    
+    \item \textbf{MoveIt}: Tutorial de uso de Motion Planning Plugin en RViz, definición de rutinas de clasificación, análisis de trayectorias
+    
+    \item \textbf{Proyecto}: Rúbrica de evaluación para implementación educativa, lista de verificación de entregables, criterios de calificación cuantitativos
+\end{itemize}
+
+Adicionalmente, se proporcionan scripts de demostración ejecutables que ilustran casos de uso fundamentales del sistema.
+
+%==============================================================================
+\section{Implementación Física del Kit}
+%==============================================================================
+
+En cumplimiento del objetivo de construir prototipos físicos del kit de clasificación, se fabricaron y ensamblaron \textbf{7 unidades completas} del sistema. La producción se realizó en instalaciones del Departamento de Ingeniería Mecánica y Mecatrónica, empleando técnicas de manufactura aditiva (impresión 3D FDM) y mecanizado convencional (corte de MDF con router CNC).
+
+\subsection{Configuración de Kits Entregados}
+
+La entrega de las 7 unidades se distribuyó en tres configuraciones diferenciadas según disponibilidad de componentes:
+
+\begin{table}[H]
+\centering
+\caption{Distribución de configuraciones de kits entregados}
+\label{tab:kits_entregados}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Configuración} & \textbf{Cantidad} & \textbf{Robot} & \textbf{Raspberry Pi 5} & \textbf{Estado} \\
+\hline
+Completa & 2 & PhantomX Pincher & RPi 5 16GB & Operativo \\
+\hline
+Sin controlador & 3 & PhantomX Pincher & --- & Requiere RPi \\
+\hline
+Sin robot & 2 & --- & RPi 5 16GB & Requiere robot \\
+\hline
+\textbf{Total} & \textbf{7} & \textbf{5} & \textbf{5} & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Justificación de configuraciones parciales}:
+
+\begin{itemize}
+    \item \textbf{Kits sin robot (2 unidades)}: Limitaciones de disponibilidad del manipulador PhantomX Pincher en proveedores nacionales al momento de la fabricación. Estos kits se entregan con todos los componentes mecánicos, electrónicos y de control, permitiendo integración posterior del robot cuando esté disponible sin modificaciones adicionales al sistema.
+    
+    \item \textbf{Kits sin Raspberry Pi (3 unidades)}: Restricciones presupuestarias para adquisición de 7 unidades de Raspberry Pi 5 con 16 GB de RAM. Los kits incluyen robot PhantomX Pincher instalado y todos los componentes mecánicos, requiriendo únicamente incorporación del controlador para operación completa.
+    
+    \item \textbf{Kits completos (2 unidades)}: Sistemas totalmente funcionales utilizados para validación de operación, generación de material fotográfico/audiovisual de demostración, y disponibilidad inmediata para inicio de actividades educativas.
+\end{itemize}
+
+Esta estrategia de entrega escalonada permite a la institución iniciar actividades con los 2 kits completos mientras gestiona adquisición de componentes faltantes para completar las 5 unidades restantes, maximizando aprovechamiento de la inversión realizada.
+
+\subsection{Componentes Comunes a Todos los Kits}
+
+Independientemente de la configuración, las 7 unidades incluyen:
+
+\begin{itemize}
+    \item Plataforma base en MDF con acabado negro mate (554 × 360 mm)
+    \item Sistema completo de zonas de trabajo (4 canecas con tapas deslizantes + zona de recolección)
+    \item Soporte de cámara con mástil vertical y brazo voladizo
+    \item Base del manipulador con identificación numérica
+    \item Regleta de distribución eléctrica personalizada con 3 interruptores independientes
+    \item Sistema de canaletas de gestión de cableado con tapas transparentes
+    \item Patas niveladoras ajustables y manijas de transporte
+    \item Contenedor de almacenamiento y transporte (600 × 400 × 171 mm)
+\end{itemize}
+
+\subsection{Proceso de Manufactura}
+
+La fabricación de componentes se realizó mediante los siguientes procesos:
+
+\begin{itemize}
+    \item \textbf{Impresión 3D FDM}: 127 piezas únicas fabricadas en PLA, PETG y TPU. Parámetros de impresión: altura de capa 0.2 mm, relleno 20-40\% según función estructural, temperatura de extrusión 200-230°C según material. Tiempo total de impresión: aproximadamente 280 horas distribuidas en 4 impresoras Ender 3 S1 Pro.
+    
+    \item \textbf{Mecanizado CNC}: 7 plataformas base cortadas en tablero MDF de 9 mm mediante router CNC. Perforaciones de Ø5 mm para insertos roscados ejecutadas con precisión de ±0.1 mm. Acabado superficial con pintura en aerosol negro mate aplicada en 3 capas.
+    
+    \item \textbf{Instalación de insertos}: 280 insertos roscados de latón (M3 y M4) instalados térmicamente mediante cautín a temperatura controlada (350°C). Profundidad de instalación verificada con pie de rey digital.
+    
+    \item \textbf{Ensamble final}: Montaje de componentes siguiendo secuencia documentada en manuales de ensamble. Verificación de funcionalidad mecánica (niveles de plataforma, deslizamiento de tapas, apertura de canaletas).
+\end{itemize}
+
+\subsection{Control de Calidad}
+
+Cada kit fabricado pasó por proceso de verificación que incluye:
+
+\begin{itemize}
+    \item Inspección dimensional de componentes críticos (±0.5 mm tolerancia)
+    \item Prueba de rigidez estructural de plataforma (carga vertical de 10 kg sin deflexión >2 mm)
+    \item Verificación de ajuste de piezas ensambladas (ausencia de holguras excesivas)
+    \item Prueba de continuidad eléctrica en sistema de distribución de potencia
+    \item Validación de accesibilidad del manipulador a las 4 zonas de depósito (kits con robot instalado)
+\end{itemize}
+
+%==============================================================================
+\section{Entregables Digitales}
+%==============================================================================
+
+Como complemento a los kits físicos, se generaron tres repositorios digitales que constituyen la base de conocimiento transferible para reproducción, extensión y mantenimiento del sistema. Los repositorios se encuentran alojados en la organización GitHub del Laboratorio de Sistemas Inteligentes y Robótica (LabSIR) de la Universidad Nacional de Colombia, garantizando acceso público permanente y control de versiones mediante Git.
+
+\begin{table}[H]
+\centering
+\caption{Repositorios digitales del proyecto}
+\label{tab:repositorios}
+\small
+\begin{tabular}{|l|p{6cm}|p{5.5cm}|}
+\hline
+\textbf{Repositorio} & \textbf{Contenido} & \textbf{URL} \\
+\hline
+Software ROS2 & Workspace completo con 9 paquetes, guías educativas y scripts de demostración & \url{github.com/labsir-un/KIT_Phantom_X_Pincher_ROS2} \\
+\hline
+Imagen SO & Backup completo de Raspberry Pi 5 con Ubuntu 24.04 LTS y ROS2 Jazzy preconfigurado & \url{github.com/labsir-un/UNPi5_Image_Ubuntu24_04} \\
+\hline
+Modelos 3D & Archivos CAD, geometrías STL, planos técnicos y esquemas eléctricos & \url{github.com/labsir-un/3DModels_KIT_Phantom_Pincher_X100} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Repositorio de Imagen del Sistema Operativo}
+
+Se desarrolló imagen completa del sistema operativo configurado para Raspberry Pi 5, lista para despliegue en hardware mediante escritura directa a tarjeta microSD. La imagen incluye:
+
+\begin{itemize}
+    \item \textbf{Sistema base}: Ubuntu 24.04 LTS Server (64-bit) con kernel optimizado para ARM64
+    \item \textbf{ROS2 Jazzy}: Instalación completa de distribución Desktop con todos los paquetes base
+    \item \textbf{Dependencias compiladas}: MoveIt2, ros2\_control, Gazebo Harmonic, OpenCV 4.8 con bindings Python
+    \item \textbf{Workspace precompilado}: \texttt{phantom\_ws} con todos los paquetes construidos y configurados
+    \item \textbf{Scripts de inicialización}: Archivos systemd para arranque automático de nodos al encendido
+    \item \textbf{Configuración de red}: Interfaces Ethernet y WiFi preconfiguradas con IP estática para acceso remoto
+    \item \textbf{Herramientas de desarrollo}: Visual Studio Code, Git, tmux, htop para desarrollo y depuración
+\end{itemize}
+
+\textbf{Especificaciones técnicas del backup}:
+\begin{itemize}
+    \item Formato: Imagen raw comprimida con gzip (.img.gz)
+    \item Tamaño: 8.2 GB comprimido, 32 GB descomprimido
+    \item Hash SHA256: Incluido para verificación de integridad
+    \item Repositorio: \url{https://github.com/labsir-un/UNPi5_Image_Ubuntu24_04}
+    \item Instrucciones: Documentación paso a paso para restauración en nueva tarjeta microSD
+\end{itemize}
+
+Este backup elimina proceso de configuración inicial (instalación de ROS2, compilación de workspace, configuración de permisos), reduciendo tiempo de puesta en marcha de aproximadamente 6 horas a 30 minutos (tiempo de escritura de imagen).
+
+\subsection{Repositorio de Modelado 3D y Electrónica}
+
+Repositorio Git estructurado con versionamiento completo de archivos CAD, geometrías de manufactura y documentación técnica. Organización:
+
+\begin{verbatim}
+kit-phantomx-hardware/
+|-- CAD/
+|   |-- Plataforma_Base/
+|   |-- Zonas_Trabajo/
+|   |-- Soporte_Camara/
+|   |-- Sistema_Electrico/
+|   +-- Ensamble_General/
+|-- STL/
+|   |-- Componentes_Estructurales/
+|   |-- Elementos_Funcionales/
+|   +-- Accesorios/
+|-- Planos/
+|   |-- Plataforma_Base.PDF
+|   |-- Canecas_Deposito.PDF
+|   +-- (15 planos tecnicos totales)
+|-- Electronica/
+|   |-- Esquematicos/
+|   |-- Lista_Componentes.xlsx
+|   +-- Diagramas_Conexion/
++-- README.md
+\end{verbatim}
+
+El repositorio completo de hardware se encuentra disponible en: \url{https://github.com/labsir-un/3DModels_KIT_Phantom_Pincher_X100}
+
+\textbf{Contenido cuantificado}:
+\begin{itemize}
+    \item 142 archivos CAD nativos (.SLDPRT, .SLDASM)
+    \item 127 archivos STL listos para impresión 3D
+    \item 15 planos técnicos en formato PDF con acotación completa
+    \item 8 esquemas eléctricos en formato editable
+    \item 3 listas de materiales (BOM) en formato Excel
+\end{itemize}
+
+\subsection{Repositorio de Software ROS2}
+
+Workspace completo con código fuente, configuraciones, simulaciones y material educativo. Estructura:
+
+\begin{verbatim}
+phantom_ws/
+|-- src/
+|   |-- phantomx_pincher_description/
+|   |-- phantomx_pincher_moveit_config/
+|   |-- phantomx_pincher_bringup/
+|   |-- phantomx_pincher_commander_cpp/
+|   |-- phantomx_pincher_demos/
+|   |-- phantomx_pincher_opencv/
+|   |-- phantomx_pincher_interfaces/
+|   |-- pincher_control/
+|   +-- phantomx_pincher/
+|-- guias/
+|   |-- Setup/
+|   |   |-- readme.md
+|   |   +-- setupOpenCV/
+|   |-- Moveit/
+|   |   +-- readme.md
+|   +-- Proyecto/
+|       +-- readme.md (rubrica de evaluacion)
++-- README.md
+\end{verbatim}
+
+El workspace completo de software se encuentra disponible en: \url{https://github.com/labsir-un/KIT_Phantom_X_Pincher_ROS2}
+
+\textbf{Contenido del repositorio}:
+\begin{itemize}
+    \item \textbf{Código fuente}: 47 archivos fuente (Python y C++), 2,840 líneas de código
+    \item \textbf{Launch files}: 12 archivos launch con configuración jerárquica
+    \item \textbf{Archivos de configuración}: 23 archivos YAML con parámetros de controladores, planificadores, cinemática
+    \item \textbf{Modelos URDF/Xacro}: 8 archivos de descripción del robot con parámetros configurables
+    \item \textbf{Guías educativas}: 3 documentos Markdown con instrucciones de instalación, uso y evaluación (8,200 palabras totales)
+    \item \textbf{Scripts de demostración}: 6 ejemplos ejecutables para operaciones básicas
+\end{itemize}
+
+\textbf{Gestión de versiones}:
+\begin{itemize}
+    \item Sistema de control: Git con historial completo de desarrollo
+    \item Ramas: \texttt{main} (estable), \texttt{develop} (integración), \texttt{feature/*} (desarrollo de características)
+    \item Tags: Versiones etiquetadas (v1.0.0, v1.1.0) correspondientes a hitos del proyecto
+    \item README completo con instrucciones de instalación, compilación y uso
+    \item Licencia: MIT para permitir uso académico y comercial sin restricciones
+\end{itemize}
+
+%==============================================================================
+\section{Lineamientos para Implementación Educativa}
+%==============================================================================
+
+En atención al objetivo de establecer lineamientos para implementación del kit en entornos educativos, se desarrolló un marco pedagógico estructurado que contempla aspectos de escalabilidad, modularidad y documentación.
+
+\subsection{Estructura Pedagógica}
+
+Se propuso organización del proyecto educativo en 6 fases secuenciales con construcción progresiva de conocimiento:
+
+\begin{enumerate}
+    \item \textbf{Fase 1 - Configuración}: Instalación de ROS2 Jazzy, dependencias, workspace (4 horas de laboratorio)
+    \item \textbf{Fase 2 - Modelado URDF}: Comprensión de formato Xacro, modificación de modelos, integración de componentes (3 horas)
+    \item \textbf{Fase 3 - MoveIt2}: Planificación interactiva en RViz, desarrollo de rutinas de clasificación (4 horas)
+    \item \textbf{Fase 4 - Programación ROS2}: Implementación de nodos publisher/subscriber, integración con MoveIt (4 horas)
+    \item \textbf{Fase 5 - Visión por Computador}: Pipeline de procesamiento OpenCV, detección de figuras (4 horas)
+    \item \textbf{Fase 6 - Integración}: Sistema completo, pruebas, optimización, documentación (3 horas)
+\end{enumerate}
+
+Total de horas de laboratorio: 22 horas, distribuibles en 11 sesiones de 2 horas o formato ajustable según calendario académico institucional.
+
+\subsection{Objetivos de Aprendizaje}
+
+Se definieron 8 objetivos educativos cuantificables:
+
+\begin{enumerate}
+    \item Configurar entornos ROS2 en Ubuntu 24.04 LTS
+    \item Comprender y modificar modelos URDF/Xacro de robots
+    \item Utilizar MoveIt2 para planificación de trayectorias
+    \item Implementar nodos ROS2 con comunicación por tópicos
+    \item Integrar procesamiento de imágenes con OpenCV
+    \item Desarrollar rutinas de manipulación automatizadas
+    \item Aplicar cinemática directa e inversa en manipuladores 4-DOF
+    \item Documentar proyectos técnicos según estándares de ingeniería
+\end{enumerate}
+
+Estos objetivos alinean con competencias de programas de Ingeniería Mecatrónica, Electrónica y Sistemas.
+
+\subsection{Sistema de Evaluación}
+
+Se propuso rúbrica cuantitativa de 15 puntos distribuidos en 3 componentes:
+
+\begin{table}[H]
+\centering
+\caption{Distribución de puntos en rúbrica de evaluación}
+\label{tab:rubrica_evaluacion}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Componente} & \textbf{Puntos} & \textbf{Criterios} \\
+\hline
+Implementación Técnica & 5.0 & Rutinas de clasificación para 4 figuras + simulación \\
+\hline
+Sistema de Percepción & 5.0 & Visión por computador (variante A) o control de vacío (variante B) \\
+\hline
+Documentación & 5.0 & Modificación URDF, videos, diagramas, repositorio \\
+\hline
+\textbf{Total} & \textbf{15.0} & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Síntesis de Resultados}
+%==============================================================================
+
+El desarrollo del kit educativo de clasificación de objetos con visión por computador resultó en la entrega de un sistema completo que integra hardware, software, diseño mecánico, simulación y lineamientos pedagógicos. Los resultados cuantificados se resumen en:
+
+\subsection{Entregables Físicos}
+
+\begin{itemize}
+    \item \textbf{7 kits fabricados y ensamblados} (2 completos, 3 sin RPi, 2 sin robot)
+    \item \textbf{127 componentes únicos} fabricados mediante FDM
+\end{itemize}
+
+\subsection{Entregables Digitales}
+
+\begin{itemize}
+    \item \textbf{Repositorio de hardware}: 142 archivos CAD, 127 STL, 15 planos técnicos, 8 esquemas eléctricos
+    \item \textbf{Repositorio de software}: 9 paquetes ROS2, 2,840 líneas de código, 12 launch files
+    \item \textbf{Imagen del SO}: Backup completo de 8.2 GB con ROS2 Jazzy y workspace precompilado
+    \item \textbf{Documentación educativa}: 3 guías técnicas con 8,200 palabras, rúbrica de evaluación de 15 puntos
+\end{itemize}

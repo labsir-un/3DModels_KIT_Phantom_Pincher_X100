@@ -1,0 +1,72 @@
+\documentclass[10pt,spanish,fleqn,openany,twoside,letterpaper]{book}
+
+\input{00config/config}
+
+\begin{document}
+
+\input{01preambulo/presentacion}
+
+%Páginas preámbulo, listado de figuras, tablas y tabla de contenido
+{\pagestyle{plain} \pagenumbering{roman}
+\setlength{\parskip}{1mm}
+\include{01preambulo/Agradecimientos}
+%\include{01preambulo/00Abreviaturas}
+\include{01preambulo/ResumenAbstract}
+\input{01preambulo/tablasContenido}
+}
+
+{\pagenumbering{arabic}
+\setlength{\parskip}{\baselineskip}
+%Incluir secciones del documento de aqui en adelante
+%Use \include para incluir desde una página nueva e \input para incluir sin salto de página
+%\include{00Intrucciones} % Anular esta linea con comentario de ser necesario
+\chapter{Introducción}
+    \input{02intro/Introduccion}
+\chapter{Justificación}
+    \input{02intro/Justificacion}
+\chapter{Planteamiento del Problema}
+    \input{02intro/Planteamiento}
+\chapter{Objetivos}
+    \input{02intro/Objetivos}
+\chapter{Marco Teórico}
+    \input{03marcoTeorico/marco}
+\chapter{Metodología}
+    \input{04metodologia/metodologia}
+\chapter{Requerimientos}
+    \input{05requerimientos/reque}
+\chapter{Diseño Conceptual}
+    \input{06disenoConceptual/disenoConceptual}
+\chapter{Simulación}
+    \input{07simulacion/simu}
+\chapter{Prototipo}
+    \input{08prototipo/proto}
+\chapter{Propuesta de Implementación Educativa}
+    \input{09implementacionEducativa/imple}
+\chapter{Resultados}
+    \input{10resultados/resul}
+\chapter{Conclusiones}
+    \input{conclusiones/conlusiones}
+%Inicio del apéndice o anexos
+
+\begin{appendix}
+    \include{apendices/apendice_cuestionario}%
+\end{appendix}
+
+%Permite visualizar la bibliografía en la tabla de contenido
+%Cambie el nombre a Bibliografía o Literatura Citada en la siguiente línea de ser preciso
+\addcontentsline{toc}{chapter}{Referencias Bibliográficas} 
+
+\let\OLDthebibliography=\thebibliography
+\def\thebibliography#1{\OLDthebibliography{#1}}
+{\scriptsize
+\pagestyle{plain}
+% Nombre del documento donde se almacenan las referencias
+\bibliography{Referencias}
+\nocite{*}
+% Inserta un página adicional al final en blanco 
+%\cleardoublepage
+% Para NO insertar una página adicional al final usar \clearpage
+\clearpage
+}}
+
+\end{document}

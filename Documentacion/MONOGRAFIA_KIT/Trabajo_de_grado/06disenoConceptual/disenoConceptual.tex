@@ -1,0 +1,126 @@
+\section{Diseño Conceptual}
+
+\subsection{Identificación de Componentes del Kit}
+
+Para la construcción del kit se identificaron los siguientes elementos principales a partir del análisis del kit de Elephant Robotics:
+
+\begin{itemize}
+    \item \textbf{Zona de recolección}: Área donde se depositan los materiales a clasificar antes de su procesamiento
+    \item \textbf{Zonas de depósito}: Espacios destinados para la clasificación y almacenamiento de los materiales procesados según su categoría
+    \item \textbf{Base del manipulador}: Estructura de soporte y fijación del robot PhantomX Pincher
+    \item \textbf{Zona de electrónica}: Area destinada al controlador, fuentes de alimentación y demás componentes que proporcionan energía y control al manipulador
+    \item \textbf{Soporte de cámara}: Estructura de montaje para el sistema de visión del kit
+    \item \textbf{Objetos de recolección}: Elementos estandarizados para las tareas de clasificación
+    \item \textbf{Plataforma base}: Superficie que integra todos los componentes mencionados anteriormente, incluyendo la electrónica, el manipulador, las zonas de recolección y depósito
+    \item \textbf{Contenedor}: Carcasa o caja que protege y contiene todos los elementos del kit, facilitando su almacenamiento y transporte
+\end{itemize}
+
+\subsection{Diseño de la Plataforma Base}
+
+El proceso de diseño inició con la definición de las dimensiones de la plataforma base y el contenedor, considerando múltiples factores técnicos y operativos.
+
+\subsubsection{Estimación de Dimensiones Iniciales}
+
+Para establecer un tamaño inicial aproximado de la plataforma, se tomó como referencia el kit de Elephant Robotics. Mediante el análisis fotográfico de la plataforma del myCobot AI Kit, se estimó que esta posee dimensiones aproximadas de 33.8 cm de ancho por 45.1 cm de largo. Estas medidas sirvieron como punto de partida para dimensionar la plataforma del presente proyecto.
+
+\subsubsection{Análisis del Espacio de Trabajo del Robot}
+
+Se analizó el rango de movimiento del robot PhantomX Pincher AX-12A para determinar las dimensiones mínimas requeridas de la plataforma. Según la información presentada por Toquica Cáceres \cite{Toquica2018}, el robot posee un radio de alcance efectivo de 30.5 cm.
+
+Adicionalmente, mediante el análisis de un modelo 3D del robot, se realizaron las siguientes mediciones:
+\begin{itemize}
+    \item Distancia desde el eje de la primera articulación hasta la base de la garra: 28.3 cm
+    \item Distancia desde el eje de la primera articulación hasta la punta de la garra completamente extendida: 32.3 cm
+\end{itemize}
+
+Con base en estos datos, se estableció que el espacio de trabajo útil del robot debe estar contenido dentro de un círculo de radio 28.3 cm, medido desde el eje de la primera articulación. Esta restricción garantiza que el robot pueda operar cómodamente dentro de su rango de movimiento nominal sin exceder sus capacidades cinemáticas.
+
+\subsubsection{Restricciones de Espacio Físico}
+
+Se consideraron las dimensiones de los escritorios disponibles en los laboratorios de Automatización y SalaCAM de la Universidad Nacional de Colombia. Las mediciones revelaron que los escritorios poseen anchos variables entre 70 cm y 100 cm. Por esta razón, se estableció que la plataforma del kit no debe exceder un ancho máximo de 70 cm, asegurando así su compatibilidad con todos los espacios de trabajo disponibles en los laboratorios.
+
+\subsection{Diseño del Contenedor}
+
+Para el diseño y selección del contenedor se establecieron los siguientes requerimientos técnicos y operativos:
+
+\subsubsection{Almacenamiento y Apilamiento de los contenedores}
+
+Dado que se deben construir 7 kits completos, el diseño del contenedor debe considerar:
+
+\begin{itemize}
+    \item \textbf{Capacidad de apilamiento}: Los contenedores deben permitir el almacenamiento vertical mediante apilamiento, reduciendo el espacio ocupado cuando no están en uso
+    \item \textbf{Resistencia estructural}: El contenedor ubicado en la parte inferior de la pila debe soportar el peso acumulado de los 6 kits superiores sin deformación ni daño estructural
+    \item \textbf{Estabilidad}: El sistema de apilamiento debe garantizar la estabilidad de la pila completa, evitando deslizamientos o volcamientos
+\end{itemize}
+
+\subsubsection{ Protección y Manejo del Contenedor}
+
+El contenedor debe cumplir las siguientes funciones de protección y operación:
+
+\begin{itemize}
+    \item \textbf{Protección física}: Salvaguardar el robot, la plataforma y todos los componentes electrónicos durante el almacenamiento y transporte
+    \item \textbf{Contención completa}: Albergar todos los elementos del kit de manera organizada y segura
+    \item \textbf{Facilidad de almacenamiento}: Permitir operaciones de guardado y extracción del kit de forma rápida y eficiente
+    \item \textbf{Transportabilidad}: Incorporar asas, agarraderas o sistemas de sujeción que faciliten el transporte manual del kit
+\end{itemize}
+
+\subsubsection{Dimensionamiento Vertical}
+
+La altura mínima del contenedor se determinó considerando:
+
+\begin{equation}
+H_{contenedor} \geq H_{manipulador} + H_{base} + H_{plataforma}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $H_{manipulador}$: Altura del robot PhantomX Pincher en su posición de reposo (brazo recogido)
+    \item $H_{base}$: Altura de la base del manipulador
+    \item $H_{plataforma}$: Espesor de la plataforma base
+\end{itemize}
+
+\subsubsection{Disponibilidad de Materiales}
+
+Se estableció como requisito fundamental que todos los componentes del contenedor deben estar disponibles comercialmente en Colombia, facilitando la adquisición de materiales y la replicación del diseño para los 7 kits requeridos.
+
+\subsubsection{Alternativas de Diseño}
+
+Con base en las necesidades establecidas, se plantearon dos opciones principales para el contenedor:
+
+\paragraph{Opción 1: Contenedor Fabricado a Medida}
+
+Esta alternativa implica el diseño y fabricación de un contenedor personalizado, considerando:
+\begin{itemize}
+    \item Selección de materiales apropiados (madera, plástico, metal o combinaciones)
+    \item Procesos de manufactura necesarios (corte, perforado, ensamblaje)
+    \item Tratamientos superficiales (pintado, sellado, protección)
+    \item Armado y ensamblaje final del contenedor
+    \item Mayor flexibilidad en el diseño para optimizar el uso del espacio
+    \item Posibilidad de personalización según necesidades específicas del kit
+\end{itemize}
+
+\paragraph{Opción 2: Contenedor Estandarizado Comercial}
+
+Esta alternativa consiste en la selección y adquisición de contenedores estandarizados disponibles en el mercado, ofreciendo:
+\begin{itemize}
+    \item Facilidad de adquisición múltiple para los 7 kits
+    \item Cumplimiento de estándares industriales de resistencia y durabilidad
+    \item Reducción de tiempos de fabricación
+    \item Compatibilidad con sistemas de almacenamiento existentes
+    \item Menor costo y tiempo de implementación
+    \item Disponibilidad inmediata en el mercado nacional
+\end{itemize}
+
+La selección entre estas alternativas se realizará mediante un análisis comparativo que considere factores como costo, tiempo de implementación, disponibilidad de recursos, y cumplimiento de los requerimientos técnicos establecidos.
+
+\input{06disenoConceptual/analisis_comparativo_contenedor}
+\input{06disenoConceptual/disenoPlataforma}
+\input{06disenoConceptual/disenoCanecas}
+\input{06disenoConceptual/disenoConceptualZonaRecoleccion}
+\input{06disenoConceptual/disenoBaseArm}
+\input{06disenoConceptual/disenoSistemaSuccion}
+\input{06disenoConceptual/disenoControlador}
+\input{06disenoConceptual/disenoSistemaVision}
+\input{06disenoConceptual/objetosRecoleccion}
+\input{06disenoConceptual/disenoMultitoma}
+\input{06disenoConceptual/completo}

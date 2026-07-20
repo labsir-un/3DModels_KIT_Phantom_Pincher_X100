@@ -1,0 +1,205 @@
+La metodología del presente trabajo se basa en un enfoque de diseño conceptual y ilustración funcional mediante simulación, siguiendo etapas adaptadas del proceso de diseño de ingeniería. Estas etapas permiten estructurar el análisis de requerimientos, el modelado del sistema, y la evaluación de su funcionamiento a nivel virtual. Las fases metodológicas que se seguirán son las siguientes:
+
+\section{Recolección y Análisis de Información}
+
+La primera fase metodológica consiste en realizar una revisión exhaustiva de la información disponible sobre sistemas similares y las tecnologías involucradas en el desarrollo del kit educativo propuesto.
+
+Esta etapa incluye:
+
+\begin{itemize}
+    \item Revisión documental de kits educativos similares, especialmente el myCobot AI Kit de Elephant Robotics, con el fin de identificar características funcionales, arquitecturas de hardware y software, así como elementos didácticos que puedan servir como referencia para el diseño propuesto.
+    
+    \item Estudio técnico del robot PhantomX Pincher, analizando sus especificaciones mecánicas, capacidades de movimiento, compatibilidad con servomotores Dynamixel, y limitaciones operativas que deban ser consideradas en el diseño del kit.
+    
+    \item Análisis de las capacidades de la Raspberry Pi 5 como plataforma de procesamiento embebido, evaluando su compatibilidad con ROS2, rendimiento computacional para tareas de visión por computador, y requisitos de integración con periféricos como cámaras y controladores de servomotores.
+    
+    \item Identificación de requerimientos funcionales y técnicos del sistema a diseñar, estableciendo las funcionalidades mínimas que debe cumplir el kit educativo y las restricciones técnicas derivadas de las plataformas hardware seleccionadas.
+\end{itemize}
+
+\section{Definición de Requerimientos}
+
+Con base en la información recopilada en la fase anterior, se procede a establecer de manera formal los requerimientos del sistema. Esta fase es fundamental para orientar las decisiones de diseño posteriores.
+
+Los aspectos a definir incluyen:
+
+\begin{itemize}
+    \item Especificación de los componentes de hardware necesarios, incluyendo cámaras, sistemas de sujeción (gripper o ventosa), fuentes de alimentación, y elementos de montaje mecánico.
+    
+    \item Especificación de los componentes de software requeridos, definiendo las bibliotecas de ROS2 necesarias, frameworks de visión por computador (como OpenCV), y herramientas de desarrollo y simulación.
+    
+    \item Delimitación de funcionalidades mínimas deseadas para el kit educativo, estableciendo qué tipos de objetos debe ser capaz de clasificar, el nivel de precisión esperado, y las operaciones básicas de manipulación que debe realizar.
+    
+    \item Identificación de restricciones físicas, considerando las dimensiones del espacio de trabajo, el peso máximo de los objetos a manipular, y las limitaciones cinemáticas del robot PhantomX Pincher.
+    
+    \item Identificación de restricciones computacionales, evaluando los recursos de procesamiento disponibles en la Raspberry Pi 5 y estableciendo compromisos entre velocidad de procesamiento y precisión en las tareas de visión.
+    
+    \item Identificación de restricciones pedagógicas, asegurando que el kit sea adecuado para su uso en entornos educativos, con una curva de aprendizaje apropiada y posibilidades de extensión para proyectos más avanzados.
+\end{itemize}
+
+\section{Diseño Conceptual del Sistema}
+
+Esta fase constituye el núcleo del trabajo, donde se desarrolla la propuesta completa del kit educativo a nivel conceptual. El diseño se aborda desde dos perspectivas complementarias: hardware y software.
+
+\subsection{Diseño de Hardware}
+
+El diseño del hardware incluye:
+
+\begin{itemize}
+    \item Propuesta de arquitectura general del sistema, estableciendo la distribución espacial de componentes y sus interconexiones físicas.
+    
+    \item Esquema de conexión entre el robot PhantomX Pincher, la Raspberry Pi 5, la cámara, y los componentes de alimentación eléctrica.
+    
+    \item Diseño físico preliminar del kit, incluyendo el sistema de montaje de la cámara en posición óptima para la captura de imágenes del área de trabajo.
+    
+    \item Especificación del mecanismo de sujeción (gripper o ventosa) más adecuado según el tipo de objetos a manipular.
+    
+    \item Diseño de la disposición de componentes electrónicos, considerando aspectos de accesibilidad, seguridad, y facilidad de mantenimiento.
+\end{itemize}
+
+\subsection{Diseño de Software}
+
+El diseño del software se centra en la arquitectura basada en ROS2:
+
+\begin{itemize}
+    \item Definición de la arquitectura de nodos ROS2 para la clasificación de objetos mediante visión por computador, estableciendo la estructura modular del sistema de software.
+    
+    \item Especificación del nodo de captura de imagen, responsable de la adquisición de imágenes desde la cámara y su publicación en topics de ROS2.
+    
+    \item Especificación del nodo de procesamiento visual, que implementa algoritmos de segmentación, detección de características, y preprocesamiento de imágenes.
+    
+    \item Especificación del nodo de clasificación de objetos, que aplica técnicas de reconocimiento de patrones o aprendizaje automático para identificar y categorizar los objetos detectados.
+    
+    \item Especificación del nodo de control del manipulador, que traduce las decisiones de clasificación en trayectorias de movimiento para el robot PhantomX Pincher.
+    
+    \item Representación esquemática de los flujos de datos entre percepción, procesamiento y acción, utilizando diagramas de arquitectura de ROS2 que muestren topics, servicios, y acciones.
+\end{itemize}
+
+\section{Modelado y Simulación del Sistema}
+
+Para validar el diseño conceptual sin necesidad de construir el sistema físico completo, se emplea simulación en entornos compatibles con ROS2.
+
+Esta fase incluye:
+
+\begin{itemize}
+    \item Modelado 3D preliminar de componentes del kit, utilizando herramientas CAD para representar la estructura física del sistema y verificar aspectos de ensamblaje y ergonomía.
+    
+    \item Configuración del entorno de simulación, empleando herramientas como Gazebo o RViz que son compatibles con ROS2, para crear un modelo virtual del espacio de trabajo.
+    
+    \item Implementación de nodos ROS2 básicos para la simulación, desarrollando versiones simplificadas de los nodos de captura de imagen, clasificación, y control.
+    
+    \item Simulación del flujo de operación mediante nodos de cámara virtual, clasificación básica basada en características simples de los objetos, y control del brazo robótico simulado.
+    
+    \item Observación del funcionamiento general del sistema en escenarios simulados, evaluando el comportamiento del sistema en diferentes condiciones operativas.
+    
+    \item Revisión del funcionamiento simulado, identificando posibles problemas de coordinación entre nodos, latencias en el flujo de datos, y oportunidades de optimización.
+    
+    \item Análisis de resultados de la simulación y ajustes al diseño, iterando sobre el diseño conceptual para incorporar las mejoras identificadas durante las pruebas de simulación.
+\end{itemize}
+
+\section{Construcción de Prototipo Físico Básico}
+
+Como complemento al diseño conceptual y las simulaciones, se contempla la construcción de un prototipo físico básico que permita ilustrar de manera tangible los principios de funcionamiento del kit propuesto.
+
+Las actividades de esta fase son:
+
+\begin{itemize}
+    \item Selección de componentes disponibles que permitan implementar una versión simplificada del diseño, priorizando la disponibilidad y el costo.
+    
+    \item Ensamblaje del prototipo físico básico, integrando el robot PhantomX Pincher con la Raspberry Pi 5, una cámara, y un sistema de sujeción simple.
+    
+    \item Implementación de software básico de control, desarrollando versiones funcionales pero simplificadas de los nodos de ROS2 diseñados.
+    
+    \item Pruebas de funcionamiento del prototipo, realizando experimentos con objetos reales para validar los conceptos de diseño.
+    
+    \item Documentación de las lecciones aprendidas durante la construcción y prueba del prototipo, que servirán como retroalimentación para refinar el diseño conceptual.
+\end{itemize}
+
+\section{Documentación y Recomendaciones}
+
+La fase final de la metodología se centra en consolidar todo el trabajo realizado en documentación técnica de alta calidad que pueda servir como base para futuras implementaciones.
+
+Esta fase comprende:
+
+\begin{itemize}
+    \item Elaboración de planos detallados del diseño mecánico, incluyendo vistas isométricas, cotas, y especificaciones de materiales.
+    
+    \item Creación de diagramas de bloques del sistema de hardware, mostrando las conexiones eléctricas y de comunicación entre componentes.
+    
+    \item Desarrollo de diagramas de arquitectura de software, documentando la estructura de nodos de ROS2, los flujos de mensajes, y las interfaces entre módulos.
+    
+    \item Redacción de guías para un posible uso académico del sistema en el futuro, incluyendo manuales de usuario, tutoriales de programación, y ejercicios prácticos sugeridos.
+    
+    \item Propuestas para adaptación pedagógica del kit en entornos educativos, considerando diferentes niveles de dificultad y objetivos de aprendizaje.
+    
+    \item Elaboración de estructura básica de guías didácticas, con actividades progresivas que permitan a los estudiantes familiarizarse con el sistema de manera gradual.
+    
+    \item Redacción de documentación técnica detallada, incluyendo especificaciones completas de hardware y software, procedimientos de calibración, y protocolos de mantenimiento.
+    
+    \item Identificación de posibles mejoras o extensiones futuras del diseño, proponiendo líneas de desarrollo que puedan ser exploradas en trabajos posteriores.
+    
+    \item Recomendaciones para la implementación práctica del kit, considerando aspectos logísticos, presupuestarios, y de integración curricular.
+\end{itemize}
+
+\section{Cronograma de Actividades}
+
+El desarrollo del trabajo de grado se estructura en un período de 16 semanas, distribuidas según el siguiente cronograma:
+
+\begin{table}[H]
+\centering
+\caption{Cronograma de actividades (Semanas 1-8)}
+\label{tab:cronograma_1}
+\footnotesize
+\begin{tabular}{|p{6cm}|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Actividad} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} \\
+\hline
+Revisión bibliográfica y análisis del estado del arte & X & X & & & & & & \\
+\hline
+Identificación de requerimientos funcionales y técnicos & & & X & X & & & & \\
+\hline
+Diseño conceptual del hardware del kit & & & & & X & X & X & \\
+\hline
+Diseño de la arquitectura del sistema en ROS2 & & & & & & & X & X \\
+\hline
+Modelado 3D preliminar de componentes del kit & & & & & & & & X \\
+\hline
+Construcción de prototipo del kit & & & & & & & & \\
+\hline
+Simulación del sistema en entorno virtual & & & & & & & & \\
+\hline
+Análisis de resultados y ajustes al diseño & & & & & & & & \\
+\hline
+Redacción final del informe & & & & & & & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Cronograma de actividades (Semanas 9-16)}
+\label{tab:cronograma_2}
+\footnotesize
+\begin{tabular}{|p{6cm}|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Actividad} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12} & \textbf{13} & \textbf{14} & \textbf{15} & \textbf{16} \\
+\hline
+Revisión bibliográfica y análisis del estado del arte & & & & & & & & \\
+\hline
+Identificación de requerimientos funcionales y técnicos & & & & & & & & \\
+\hline
+Diseño conceptual del hardware del kit & & & & & & & & \\
+\hline
+Diseño de la arquitectura del sistema en ROS2 & & & & & & & & \\
+\hline
+Modelado 3D preliminar de componentes del kit & X & & & & & & & \\
+\hline
+Construcción de prototipo del kit & X & X & & & & & & \\
+\hline
+Simulación del sistema en entorno virtual & & X & X & & & & & \\
+\hline
+Análisis de resultados y ajustes al diseño & & & X & X & X & & & \\
+\hline
+Redacción final del informe & & & & & X & X & X & \\
+\hline
+\end{tabular}
+\end{table}

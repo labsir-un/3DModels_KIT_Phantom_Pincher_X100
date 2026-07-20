@@ -1,0 +1,650 @@
+\section{Lineamientos para Implementación Educativa}
+
+Este capítulo establece los lineamientos para la implementación del kit PhantomX Pincher en entornos educativos, proporcionando una guía estructurada para docentes y estudiantes que utilizarán la plataforma desarrollada en actividades de laboratorio. El enfoque pedagógico propuesto permite a los estudiantes construir conocimiento progresivo en robótica, visión por computador y programación mediante un proyecto integrador.
+
+%==============================================================================
+\subsection{Objetivos de Aprendizaje}
+%==============================================================================
+
+La implementación del kit en un curso de robótica permite alcanzar los siguientes objetivos educativos:
+
+\begin{enumerate}
+    \item Configurar y gestionar entornos de desarrollo para ROS2 Jazzy en sistemas Ubuntu 24.04 LTS
+    \item Comprender y modificar modelos cinemáticos de robots mediante formato URDF/Xacro
+    \item Utilizar MoveIt2 para planificación de trayectorias en manipuladores seriales
+    \item Implementar nodos ROS2 con comunicación mediante tópicos y servicios
+    \item Integrar procesamiento de imágenes con OpenCV para detección de objetos
+    \item Desarrollar rutinas de manipulación automatizadas para tareas de clasificación
+    \item Aplicar conceptos de cinemática directa e inversa en manipuladores de 4 grados de libertad
+    \item Documentar proyectos técnicos mediante estándares de ingeniería
+\end{enumerate}
+
+Estos objetivos alinean con competencias de programas de Ingeniería Mecatrónica, Ingeniería Electrónica e Ingeniería de Sistemas, cubriendo áreas de robótica, control automático, visión artificial y sistemas embebidos.
+
+%==============================================================================
+\subsection{Estructura Pedagógica Propuesta}
+%==============================================================================
+
+El proyecto educativo se organiza en seis fases secuenciales que permiten construcción progresiva de conocimiento, minimizando la carga cognitiva mediante modularidad y abstracción incremental.
+
+\subsubsection{Fase 1: Configuración del Entorno de Desarrollo}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Instalar ROS2 Jazzy Desktop en Ubuntu 24.04 LTS
+    \item Configurar workspace de desarrollo con estructura estándar de ROS2
+    \item Instalar dependencias de MoveIt2, control y visualización
+    \item Verificar funcionamiento mediante ejemplos básicos
+\end{itemize}
+
+\paragraph{Requisitos Previos}
+\begin{itemize}
+    \item Sistema operativo Ubuntu 24.04 LTS (instalación nativa o máquina virtual con mínimo 4 GB RAM, 50 GB disco)
+    \item Conocimientos básicos de terminal Linux (navegación, permisos, edición de archivos)
+    \item Conexión a internet estable para descarga de paquetes (~5 GB)
+\end{itemize}
+
+\paragraph{Actividades}
+
+Los estudiantes deben seguir la documentación oficial de ROS2 Jazzy (\url{https://docs.ros.org/en/jazzy/}) para instalar la distribución completa Desktop. Posteriormente, deben configurar el entorno permanentemente agregando el script de inicialización al archivo de configuración de bash (\texttt{\textasciitilde/.bashrc}).
+
+La instalación de dependencias del sistema incluye herramientas de desarrollo (terminal avanzado, control de versiones), así como los siguientes paquetes ROS2 esenciales para el proyecto:
+
+\begin{itemize}
+    \item \textbf{Control}: \texttt{ros2-control} y \texttt{ros2-controllers} para gestión de controladores de hardware
+    \item \textbf{Modelado}: \texttt{xacro} para procesamiento de macros en archivos URDF
+    \item \textbf{Visualización}: \texttt{joint-state-publisher-gui} para control manual de articulaciones
+    \item \textbf{Transformadas}: \texttt{tf-transformations} para cálculos de marcos de referencia
+    \item \textbf{Planificación}: Suite completa \texttt{moveit} para planificación de movimiento
+\end{itemize}
+
+El workspace del proyecto se clona desde el repositorio institucional y se compila utilizando la herramienta \texttt{colcon} con opción de enlaces simbólicos para facilitar desarrollo iterativo.
+
+\paragraph{Resultados Esperados}
+
+Al finalizar esta fase, el estudiante debe poder:
+\begin{itemize}
+    \item Ejecutar \texttt{ros2 topic list} y visualizar tópicos del sistema
+    \item Lanzar visualización del robot en RViz mediante \texttt{ros2 launch phantomx\_pincher\_description view.launch.py}
+    \item Mover articulaciones mediante interfaz gráfica \texttt{joint\_state\_publisher\_gui}
+\end{itemize}
+
+\subsubsection{Fase 2: Modelado 3D y Descripción Cinemática}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Comprender formato URDF y sistema de macros Xacro
+    \item Modificar modelo del robot agregando componentes personalizados
+    \item Integrar mallas STL de contenedor y zona de recolección
+    \item Validar modelo mediante visualización en RViz
+\end{itemize}
+
+\paragraph{Actividades}
+
+Los estudiantes analizan la estructura del archivo URDF principal, que contiene la definición del robot mediante el sistema de macros Xacro. El archivo define argumentos configurables como \texttt{ros2\_control} (habilitar/deshabilitar sistema de control), \texttt{collision} (incluir geometrías de colisión), y otros parámetros estructurales. Los componentes del robot (brazo y gripper) se incluyen mediante directivas \texttt{xacro:include} que referencian archivos separados, facilitando modularidad y reutilización.
+
+Para agregar componentes personalizados (contenedor, zona de recolección, canecas), los estudiantes deben crear nuevos elementos \texttt{link} con geometrías tipo mesh que referencian los archivos STL previamente diseñados. Estos links se conectan al modelo mediante elementos \texttt{joint} de tipo fijo, especificando el enlace padre (\texttt{base\_link}) y las transformadas de posición y orientación relativas.
+
+\paragraph{Resultados Esperados}
+
+Modelo del robot que incluye:
+\begin{itemize}
+    \item Manipulador PhantomX Pincher (4 DOF) con mallas visuales y de colisión
+    \item Contenedor de almacenamiento integrado en \texttt{base\_link}
+    \item Zona de recolección circular (Ø146 mm) en posición accesible
+    \item Mástil de cámara con altura ajustable
+    \item Cuatro canecas de depósito en posiciones fijas
+\end{itemize}
+
+\subsubsection{Fase 3: Planificación de Movimiento con MoveIt2}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Comprender arquitectura de MoveIt2 (grupos de planificación, escena, controladores)
+    \item Utilizar RViz Motion Planning Plugin para planificación interactiva
+    \item Implementar rutinas de movimiento para clasificación de objetos
+    \item Analizar trayectorias mediante visualización de estados intermedios
+\end{itemize}
+
+\paragraph{Conceptos Fundamentales}
+
+\textbf{Grupos de Planificación}: El robot define dos grupos:
+\begin{itemize}
+    \item \texttt{arm}: Cadena cinemática de 4-DOF (shoulder pan, shoulder lift, elbow flex, wrist flex)
+    \item \texttt{gripper}: 2-DOF para apertura/cierre de dedos
+\end{itemize}
+
+\textbf{Estados Nombrados}: Configuraciones predefinidas accesibles por nombre:
+\begin{itemize}
+    \item \texttt{up}: Posición vertical para transporte
+    \item \texttt{rest}: Posición de reposo fuera de zona de trabajo
+    \item \texttt{ready\_near}: Posición preparatoria sobre zona de recolección
+\end{itemize}
+
+\paragraph{Actividades}
+
+Los estudiantes inician la simulación completa ejecutando el archivo launch principal del paquete \texttt{phantomx\_pincher\_bringup}, que arranca todos los nodos necesarios: controladores, MoveIt2, RViz y robot state publisher.
+
+La planificación manual en RViz sigue un flujo interactivo:
+\begin{enumerate}
+    \item Seleccionar grupo de planificación \texttt{arm}
+    \item Mover marcador interactivo a posición objetivo
+    \item Presionar \textit{Plan} para generar trayectoria
+    \item Visualizar estados intermedios
+    \item Presionar \textit{Execute} para ejecutar en simulación
+\end{enumerate}
+
+Los estudiantes definen la lógica de clasificación siguiendo una secuencia de 8 pasos: (1) mover a posición preparatoria sobre zona de recolección, (2) descender a altura de agarre, (3) cerrar gripper, (4) ascender a altura segura, (5) consultar coordenadas de caneca según tipo de figura, (6) mover a posición sobre caneca correspondiente, (7) abrir gripper para liberar objeto, (8) regresar a posición de reposo. Esta secuencia garantiza trayectorias libres de colisión y operación consistente.
+
+\paragraph{Resultados Esperados}
+
+Estudiantes capaces de:
+\begin{itemize}
+    \item Planificar trayectorias libres de colisiones entre posiciones arbitrarias
+    \item Identificar estados singulares del manipulador (configuraciones no alcanzables)
+    \item Evaluar calidad de trayectorias (suavidad, longitud, tiempo de ejecución)
+    \item Implementar rutinas de clasificación para las 4 figuras geométricas
+\end{itemize}
+
+\subsubsection{Fase 4: Programación de Nodos ROS2}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Implementar nodos ROS2 en Python con arquitectura publisher/subscriber
+    \item Utilizar mensajes estándar (\texttt{std\_msgs}, \texttt{geometry\_msgs})
+    \item Definir mensajes personalizados para comandos de pose
+    \item Integrar nodos con sistema MoveIt2 mediante topics
+\end{itemize}
+
+\paragraph{Arquitectura de Comunicación}
+
+\begin{table}[H]
+\centering
+\caption{Tópicos de comunicación del sistema}
+\label{tab:topics}
+\small
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Tópico} & \textbf{Tipo} & \textbf{Descripción} \\
+\hline
+\texttt{/tipo\_figura} & \texttt{std\_msgs/String} & Publicado por nodo de visión, indica tipo de figura detectada \\
+\texttt{/pose\_command} & \texttt{PoseCommand} & Publicado por clasificador, envía pose objetivo a MoveIt \\
+\texttt{/joint\_states} & \texttt{sensor\_msgs/JointState} & Publicado por controladores, estados actuales de articulaciones \\
+\texttt{/gripper\_command} & \texttt{std\_msgs/Float64MultiArray} & Control de apertura/cierre del gripper \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Implementación de Nodo Clasificador}
+
+El nodo clasificador se implementa en Python utilizando la biblioteca \texttt{rclpy}. La estructura básica incluye:
+
+\begin{itemize}
+    \item \textbf{Inicialización}: Crear nodo heredando de clase \texttt{Node}, configurar suscriptor al tópico \texttt{/tipo\_figura} con callback asociado
+    \item \textbf{Diccionario de coordenadas}: Mapear cada tipo de figura (cubo, rectángulo, pentágono, círculo) a coordenadas XYZ de caneca correspondiente
+    \item \textbf{Callback de figura}: Función que se ejecuta al recibir mensaje en tópico, valida tipo de figura y dispara rutina de clasificación
+    \item \textbf{Ejecución de rutina}: Implementar secuencia de movimientos comunicándose con MoveIt2 mediante mensajes de pose objetivo
+    \item \textbf{Main loop}: Inicializar ROS2, crear instancia del nodo, mantener nodo activo con \texttt{spin}, destruir al finalizar
+\end{itemize}
+
+Los estudiantes deben completar la función \texttt{ejecutar\_rutina} integrando llamadas a MoveIt2 para planificación y ejecución de trayectorias.
+
+\paragraph{Resultados Esperados}
+
+Nodo funcional que:
+\begin{itemize}
+    \item Se suscribe a tópico de detección de figuras
+    \item Mapea tipo de figura a coordenadas de caneca correspondiente
+    \item Publica comandos de movimiento a MoveIt2
+    \item Registra eventos en log de ROS2
+    \item Maneja excepciones y estados de error
+\end{itemize}
+
+\subsubsection{Fase 5: Visión por Computador}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Capturar imágenes desde cámara USB mediante \texttt{cv\_bridge}
+    \item Implementar pipeline de procesamiento de imágenes con OpenCV
+    \item Detectar y clasificar figuras geométricas mediante análisis de contornos
+    \item Publicar resultados de detección en tópico ROS2
+\end{itemize}
+
+\paragraph{Figuras y Correspondencia}
+
+\begin{table}[H]
+\centering
+\caption{Especificación de figuras a detectar}
+\label{tab:figuras}
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Figura} & \textbf{Caneca} & \textbf{Color} & \textbf{Dimensiones} \\
+\hline
+Cubo & Roja & Naranja TPU & 25 × 25 × 25 mm \\
+Rectángulo & Amarilla & Naranja TPU & 50 × 25 × 25 mm \\
+Pentágono & Azul & Naranja TPU & Ø25 × 25 mm (inscrito) \\
+Círculo & Verde & Naranja TPU & Ø25 × 25 mm \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Pipeline de Procesamiento}
+
+\begin{enumerate}
+    \item \textbf{Captura}: Obtener frame de cámara Logitech C270 (1280×720 @ 30 fps)
+    \item \textbf{Conversión}: RGB a HSV para segmentación por color naranja
+    \item \textbf{Umbralización}: Crear máscara binaria de píxeles en rango HSV del TPU naranja
+    \item \textbf{Morfología}: Aplicar operaciones de cierre para eliminar ruido
+    \item \textbf{Detección de contornos}: Encontrar contornos cerrados mediante algoritmo de Suzuki
+    \item \textbf{Filtrado}: Descartar contornos con área menor a umbral (evitar falsos positivos)
+    \item \textbf{Aproximación poligonal}: Aproximar contorno mediante Douglas-Peucker
+    \item \textbf{Clasificación}: Contar vértices y calcular aspect ratio para identificar figura
+    \item \textbf{Publicación}: Enviar tipo de figura detectada a tópico \texttt{/tipo\_figura}
+\end{enumerate}
+
+\paragraph{Implementación de Detección}
+
+La función de clasificación de figuras utiliza el algoritmo de aproximación poligonal de Douglas-Peucker disponible en OpenCV. El proceso incluye:
+
+\begin{enumerate}
+    \item \textbf{Aproximación poligonal}: Calcular perímetro del contorno, aplicar tolerancia del 2\% para simplificación, obtener polígono aproximado
+    \item \textbf{Conteo de vértices}: Determinar número de vértices del polígono aproximado
+    \item \textbf{Clasificación por forma}:
+    \begin{itemize}
+        \item 4 vértices: Calcular aspect ratio del rectángulo envolvente para diferenciar cubo (ratio cercano a 1.0) de rectángulo (ratio alejado de 1.0)
+        \item 5 vértices: Identificar como pentágono
+        \item Más de 6 vértices: Clasificar como círculo por aproximación a forma circular
+    \end{itemize}
+    \item \textbf{Retorno}: Devolver string con tipo de figura detectada o "desconocido" si no coincide con patrones esperados
+\end{enumerate}
+
+Los umbrales de aspect ratio (0.9 a 1.1 para cubos) deben ajustarse experimentalmente según calibración de cámara y distorsión de lente.
+
+\paragraph{Calibración de Parámetros HSV}
+
+Determinación experimental de rangos HSV para TPU naranja bajo iluminación artificial (400-600 lux):
+
+\begin{itemize}
+    \item \textbf{Hue}: 10-25 (naranja en espacio HSV)
+    \item \textbf{Saturation}: 100-255 (alta saturación para evitar confusión con fondo blanco)
+    \item \textbf{Value}: 100-255 (rango amplio para compensar variaciones de iluminación)
+\end{itemize}
+
+\paragraph{Resultados Esperados}
+
+Sistema de visión capaz de:
+\begin{itemize}
+    \item Detectar las 4 figuras con precisión >90\% bajo iluminación controlada
+    \item Procesar frames a mínimo 10 fps para operación en tiempo real
+    \item Filtrar falsos positivos mediante umbrales de área y circularidad
+    \item Publicar detecciones con latencia <100 ms
+\end{itemize}
+
+\subsubsection{Fase 6: Integración y Validación del Sistema}
+
+\paragraph{Objetivos Específicos}
+\begin{itemize}
+    \item Integrar todos los componentes en sistema funcional completo
+    \item Validar funcionamiento mediante pruebas de clasificación
+    \item Optimizar parámetros de velocidad y precisión
+    \item Documentar sistema mediante diagramas y videos demostrativos
+\end{itemize}
+
+\paragraph{Arquitectura Integrada}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm, auto]
+    \tikzstyle{node} = [rectangle, draw, fill=blue!20, text width=5em, text centered, minimum height=2.5em]
+    \tikzstyle{topic} = [ellipse, draw, fill=green!20, text width=4em, text centered]
+    \tikzstyle{arrow} = [thick,-latex]
+
+    \node (cam) [node] {Cámara\\C270};
+    \node (vision) [node, right of=cam, xshift=2cm] {Nodo\\Visión};
+    \node (topic1) [topic, right of=vision, xshift=1.5cm] {/tipo\\figura};
+    \node (clasif) [node, right of=topic1, xshift=1.5cm] {Nodo\\Clasificador};
+    \node (topic2) [topic, below of=clasif] {/pose\\command};
+    \node (moveit) [node, below of=topic2] {MoveIt2};
+    \node (robot) [node, left of=moveit, xshift=-2cm] {Robot\\Físico};
+
+    \draw [arrow] (cam) -- (vision);
+    \draw [arrow] (vision) -- (topic1);
+    \draw [arrow] (topic1) -- (clasif);
+    \draw [arrow] (clasif) -- (topic2);
+    \draw [arrow] (topic2) -- (moveit);
+    \draw [arrow] (moveit) -- (robot);
+\end{tikzpicture}
+\caption{Arquitectura del sistema de clasificación integrado. El flujo de información va desde la captura visual hasta la ejecución física, pasando por procesamiento, planificación y control.}
+\label{fig:arquitectura_sistema}
+\end{figure}
+
+\paragraph{Protocolo de Pruebas}
+
+\begin{enumerate}
+    \item \textbf{Prueba de Detección Visual}
+    \begin{itemize}
+        \item Colocar cada figura individualmente en zona de recolección
+        \item Verificar detección correcta en tópico \texttt{/tipo\_figura}
+        \item Medir tasa de aciertos sobre 20 intentos por figura
+    \end{itemize}
+    
+    \item \textbf{Prueba de Rutinas de Clasificación}
+    \begin{itemize}
+        \item Ejecutar rutina para cada tipo de figura
+        \item Verificar trayectoria libre de colisiones
+        \item Confirmar depósito en caneca correcta
+    \end{itemize}
+    
+    \item \textbf{Prueba de Sistema Completo}
+    \begin{itemize}
+        \item Secuencia aleatoria de 16 figuras (4 de cada tipo)
+        \item Medir tiempo total de clasificación
+        \item Registrar errores de detección o manipulación
+        \item Calcular tasa de éxito global
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Lista de Verificación para Entrega}
+
+\begin{enumerate}
+    \item[$\square$] Rutinas implementadas para las 4 figuras geométricas
+    \item[$\square$] Nodo ROS2 funcional con arquitectura publisher/subscriber
+    \item[$\square$] Modelo URDF modificado con contenedor, zona de recolección y canecas
+    \item[$\square$] Video de funcionamiento en simulación Gazebo (mínimo 2 minutos)
+    \item[$\square$] Video de funcionamiento con robot real (mínimo 3 minutos)
+    \item[$\square$] Detección visual funcional de 4 figuras con precisión documentada
+    \item[$\square$] Diagrama de nodos generado con \texttt{rqt\_graph}
+    \item[$\square$] Repositorio Git con código completo y documentación
+    \item[$\square$] Plano de planta del montaje físico (vistas superior y lateral)
+    \item[$\square$] Diagrama de flujo del sistema en formato Mermaid
+    \item[$\square$] Videos con intro institucional del laboratorio
+\end{enumerate}
+
+%==============================================================================
+\subsection{Criterios de Evaluación}
+%==============================================================================
+
+La evaluación del proyecto se realiza mediante rúbrica estructurada en tres componentes con peso equivalente.
+
+\subsubsection{Componente 1: Implementación Técnica (5 puntos)}
+
+\begin{table}[H]
+\centering
+\caption{Rúbrica - Implementación técnica}
+\label{tab:rubrica_tecnica}
+\footnotesize
+\begin{tabular}{|l|p{10cm}|c|}
+\hline
+\textbf{Criterio} & \textbf{Descripción} & \textbf{Puntos} \\
+\hline
+Rutina Cubo & Rutina funcional que transporta cubo desde zona de recolección a caneca roja & 1.0 \\
+\hline
+Rutina Rectángulo & Rutina funcional que transporta rectángulo a caneca amarilla & 1.0 \\
+\hline
+Rutina Pentágono & Rutina funcional que transporta pentágono a caneca azul & 1.0 \\
+\hline
+Rutina Círculo & Rutina funcional que transporta círculo a caneca verde & 1.0 \\
+\hline
+Simulación Gazebo & Video mostrando operación correcta de las 4 rutinas en entorno simulado & 1.0 \\
+\hline
+\textbf{Subtotal} & & \textbf{5.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Componente 2: Sistema de Percepción (5 puntos)}
+
+\textbf{Variante A - Grupos con Cámara:}
+
+\begin{table}[H]
+\centering
+\caption{Rúbrica - Visión por computador}
+\label{tab:rubrica_vision}
+\footnotesize
+\begin{tabular}{|l|p{10cm}|c|}
+\hline
+\textbf{Criterio} & \textbf{Descripción} & \textbf{Puntos} \\
+\hline
+Nodo ROS2 & Nodo que suscribe a tópico de cámara y publica tipo de figura detectada & 1.5 \\
+\hline
+Detección de Figuras & Implementación funcional de detección de las 4 figuras mediante OpenCV & 2.0 \\
+\hline
+Integración & Sistema completo que detecta figura y ejecuta rutina de clasificación correspondiente & 1.5 \\
+\hline
+\textbf{Subtotal} & & \textbf{5.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Variante B - Grupos con Sistema de Succión:}
+
+\begin{table}[H]
+\centering
+\caption{Rúbrica - Control de vacío}
+\label{tab:rubrica_vacio}
+\footnotesize
+\begin{tabular}{|l|p{10cm}|c|}
+\hline
+\textbf{Criterio} & \textbf{Descripción} & \textbf{Puntos} \\
+\hline
+Nodo Control Teclado & Nodo que escucha teclas y publica comandos para seleccionar figura & 1.5 \\
+\hline
+Circuito Bomba & Implementación de circuito de control de bomba de vacío con relé & 2.0 \\
+\hline
+Integración & Sistema que permite seleccionar figura por teclado y ejecutar clasificación & 1.5 \\
+\hline
+\textbf{Subtotal} & & \textbf{5.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Componente 3: Documentación y Evidencias (5 puntos)}
+
+\begin{table}[H]
+\centering
+\caption{Rúbrica - Documentación}
+\label{tab:rubrica_doc}
+\footnotesize
+\begin{tabular}{|l|p{10cm}|c|}
+\hline
+\textbf{Criterio} & \textbf{Descripción} & \textbf{Puntos} \\
+\hline
+Modificación URDF & Contenedor, zona de recolección y canecas agregadas correctamente en Xacro & 1.0 \\
+\hline
+Video Robot Real & Video en YouTube mostrando clasificación de las 4 figuras con robot físico & 1.5 \\
+\hline
+Diagramas Técnicos & Diagrama \texttt{rqt\_graph}, plano de planta, diagrama de flujo Mermaid & 1.5 \\
+\hline
+Repositorio & Código completo, README con instrucciones de uso, estructura organizada & 1.0 \\
+\hline
+\textbf{Subtotal} & & \textbf{5.0} \\
+\hline
+\multicolumn{2}{|r|}{\textbf{TOTAL}} & \textbf{15.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\subsection{Recursos de Apoyo}
+%==============================================================================
+
+\subsubsection{Documentación Oficial de Referencia}
+
+\begin{itemize}
+    \item \textbf{ROS2 Jazzy}: Documentación completa en \url{https://docs.ros.org/en/jazzy/}
+    \item \textbf{MoveIt2}: Tutoriales y API en \url{https://moveit.ros.org/}
+    \item \textbf{OpenCV}: Documentación de funciones en \url{https://docs.opencv.org/}
+    \item \textbf{Gazebo}: Simulación física en \url{https://gazebosim.org/docs}
+\end{itemize}
+
+\subsubsection{Comandos de Referencia Rápida}
+
+Los estudiantes deben familiarizarse con los siguientes comandos esenciales de ROS2 para operación y depuración del sistema:
+
+\begin{itemize}
+    \item \textbf{Compilación}: Utilizar \texttt{colcon build} con opción de enlaces simbólicos para recompilar workspace tras modificaciones
+    \item \textbf{Listar nodos}: Comando \texttt{ros2 node list} muestra todos los nodos activos en el sistema
+    \item \textbf{Listar tópicos}: Comando \texttt{ros2 topic list} enumera todos los tópicos disponibles para comunicación
+    \item \textbf{Monitorear datos}: Comando \texttt{ros2 topic echo} seguido del nombre de tópico permite observar mensajes en tiempo real (útil para \texttt{/joint\_states})
+    \item \textbf{Visualizar arquitectura}: Herramienta \texttt{rqt\_graph} genera diagrama de nodos y tópicos del sistema
+    \item \textbf{Árbol de transformadas}: Herramienta \texttt{tf2\_tools view\_frames} genera PDF con jerarquía completa de marcos de referencia
+\end{itemize}
+
+Estos comandos constituyen el conjunto mínimo para navegación, depuración y validación del sistema durante desarrollo.
+
+\subsubsection{Herramientas de Depuración}
+
+\begin{table}[H]
+\centering
+\caption{Herramientas para diagnóstico del sistema}
+\label{tab:herramientasDiag}
+\small
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\textbf{Herramienta} & \textbf{Uso} \\
+\hline
+\texttt{rqt\_graph} & Visualización de arquitectura de nodos y tópicos \\
+\texttt{rqt\_plot} & Gráficas en tiempo real de datos de tópicos \\
+\texttt{rqt\_image\_view} & Visualización de streams de cámara \\
+\texttt{tf2\_echo} & Verificación de transformadas entre marcos de referencia \\
+\texttt{ros2 bag} & Grabación y reproducción de datos de tópicos \\
+\hline
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\subsection{Recomendaciones para Docentes}
+%==============================================================================
+
+Basándose en experiencia de implementaciones previas del kit, se recomiendan las siguientes prácticas pedagógicas:
+
+\subsubsection{Organización de Sesiones de Laboratorio}
+
+\begin{enumerate}
+    \item \textbf{Sesión 1 - Configuración (4 horas)}
+    \begin{itemize}
+        \item Instalación guiada de ROS2 y dependencias
+        \item Clonación y compilación del workspace
+        \item Verificación de funcionamiento básico
+        \item Demostración del sistema completo funcionando
+    \end{itemize}
+    
+    \item \textbf{Sesión 2 - Modelado URDF (3 horas)}
+    \begin{itemize}
+        \item Explicación de formato URDF/Xacro
+        \item Modificación guiada del modelo
+        \item Ejercicios de agregado de componentes
+        \item Validación en RViz
+    \end{itemize}
+    
+    \item \textbf{Sesión 3 - MoveIt2 (4 horas)}
+    \begin{itemize}
+        \item Conceptos de planificación de movimiento
+        \item Uso de Motion Planning Plugin en RViz
+        \item Desarrollo de primera rutina de clasificación
+        \item Análisis de trayectorias generadas
+    \end{itemize}
+    
+    \item \textbf{Sesión 4 - Programación ROS2 (4 horas)}
+    \begin{itemize}
+        \item Estructura de nodos en Python
+        \item Implementación de publisher/subscriber
+        \item Definición de mensajes personalizados
+        \item Integración con MoveIt2
+    \end{itemize}
+    
+    \item \textbf{Sesión 5 - Visión por Computador (4 horas)}
+    \begin{itemize}
+        \item Pipeline de procesamiento de imágenes
+        \item Calibración de parámetros HSV
+        \item Implementación de detección de figuras
+        \item Pruebas con objetos reales
+    \end{itemize}
+    
+    \item \textbf{Sesión 6 - Integración (3 horas)}
+    \begin{itemize}
+        \item Conexión de todos los componentes
+        \item Pruebas de sistema completo
+        \item Optimización de parámetros
+        \item Documentación final
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Gestión de Grupos de Trabajo}
+
+\begin{itemize}
+    \item \textbf{Tamaño de grupos}: 2-3 estudiantes por kit (permite colaboración sin fragmentación excesiva)
+    \item \textbf{Asignación de roles}: Rotar responsabilidades entre sesiones (uno programa, otro documenta, otro opera hardware)
+    \item \textbf{Control de versiones}: Uso obligatorio de Git con commits documentados
+    \item \textbf{Reuniones de seguimiento}: Check-points semanales de 15 minutos por grupo para identificar bloqueos
+\end{itemize}
+
+\subsubsection{Puntos Críticos Identificados}
+
+Problemas recurrentes observados en implementaciones previas:
+
+\begin{enumerate}
+    \item \textbf{Configuración de entorno}: Errores en paths de ROS2, versiones incompatibles de paquetes
+    \begin{itemize}
+        \item Solución: Proveer script de instalación automatizado
+    \end{itemize}
+    
+    \item \textbf{Comprensión de transformadas TF}: Dificultad para entender marcos de referencia y conversiones
+    \begin{itemize}
+        \item Solución: Ejercicio previo de visualización con \texttt{tf2\_tools}
+    \end{itemize}
+    
+    \item \textbf{Calibración de cámara}: Parámetros HSV muy sensibles a iluminación ambiental
+    \begin{itemize}
+        \item Solución: Proveer rangos iniciales y herramienta interactiva de calibración
+    \end{itemize}
+    
+    \item \textbf{Integración final}: Errores de sincronización entre componentes
+    \begin{itemize}
+        \item Solución: Enfatizar pruebas modulares antes de integración completa
+    \end{itemize}
+\end{enumerate}
+
+%==============================================================================
+\subsection{Extensiones Avanzadas}
+%==============================================================================
+
+Para estudiantes o grupos con progreso acelerado, se sugieren las siguientes extensiones:
+
+\subsubsection{Extensión 1: Clasificación por Múltiples Atributos}
+
+Implementar clasificación basada en combinación de forma y color:
+\begin{itemize}
+    \item Detección simultánea de forma (círculo, cuadrado, pentágono) y color (rojo, azul, verde, amarillo)
+    \item 12 figuras distintas (3 formas × 4 colores)
+    \item Matriz de canecas 3×4 para depósito
+\end{itemize}
+
+\subsubsection{Extensión 2: Planificación de Secuencia Óptima}
+
+Desarrollo de algoritmo que optimiza orden de clasificación:
+\begin{itemize}
+    \item Detección de múltiples objetos en zona de recolección
+    \item Planificación de secuencia que minimiza distancia total recorrida
+    \item Implementación de algoritmo del viajante (TSP) simplificado
+\end{itemize}
+
+\subsubsection{Extensión 3: Aprendizaje por Refuerzo}
+
+Entrenamiento de política de agarre mediante RL:
+\begin{itemize}
+    \item Simulación en Gazebo con variaciones de posición de objeto
+    \item Red neuronal que predice pose óptima de agarre
+    \item Transferencia de política aprendida a robot real
+\end{itemize}
+
+\subsubsection{Extensión 4: Interfaz de Usuario Web}
+
+Desarrollo de dashboard para monitoreo y control:
+\begin{itemize}
+    \item Visualización en tiempo real de estados del robot
+    \item Stream de video de cámara con overlays de detección
+    \item Controles para inicio/parada de secuencias
+    \item Gráficas de estadísticas de clasificación
+\end{itemize}
